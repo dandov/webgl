@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>WebGl Test</title>
+	<style type="text/css">
+		 body {
+        border: 0;
+        background-color: white;
+      }
+      /* make the canvas the size of the viewport */
+      canvas {
+        width: 512px;
+        height: 512px;
+        display: block;
+      }
+	</style>
+</head>
+<body>
+	<canvas id="canvas" width="512px" height="512px"></canvas>
+	<script id="hellotriangle.vp" type="glsl">
+ 
+	  // an attribute will receive data from a buffer
+	  attribute vec4 a_position;
+	  varying vec4 v_position;
+	 
+	  // all shaders have a main function
+	  void main() {
+	 
+	    // gl_Position is a special variable a vertex shader
+	    // is responsible for setting
+	    v_position = abs(a_position);
+	    gl_Position = a_position;
+	  }
+	</script>
+	<script id="hellotriangle.fp" type="glsl">
+	  // fragment shaders don't have a default precision so we need
+	  // to pick one. mediump is a good default
+	  precision highp float;
+	  varying vec4 v_position;
+	 
+	  void main() {
+	    // gl_FragColor is a special variable a fragment shader
+	    // is responsible for setting
+	    gl_FragColor = v_position; // return redish-purple
+	  }
+	</script>
+	<script type="text/javascript">
+		function CreateShader(gl, shader_source_id, type) {
+			var shader = gl.createShader(type);
+			gl.shaderSource(shader, document.getElementById(shader_source_id).text);
+			gl.compileShader(shader);
+			var successful_compilation = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+			if (successful_compilation)
+				return shader;
+
+			alert('Failed to compile shader: ' + shader_source_id);
+			console.log(gl.getShaderInfoLog(shader));
+			gl.deleteShader(shader);
+		}
+
+		function CreateProgram(gl, vertex_shader, fragment_shader) {
+			var program = gl.createProgram();
+			gl.attachShader(program, vertex_shader);
+			gl.attachShader(program, fragment_shader);
+			gl.linkProgram(program);
+			var success = gl.getProgramParameter(program, gl.LINK_STATUS);
+			if (success)
+				return program;
+
+			alert('Failed to create program.');
+			console.log(gl.getProgramInfoLog(program));
+			gl.deleteProgram(program);
+			gl.deleteShader(vertex_shader);
+			gl.deleteShader(fragment_shader);
+		}
+	</script>
+	<script type="text/javascript">
+		// https://webglfundamentals.org/webgl/lessons/webgl-fundamentals.html
+		// http://blog.tojicode.com/2012/10/oesvertexarrayobject-extension.html
+		// https://learnopengl.com/#!Getting-started/Hello-Triangle
+		var canvas = document.getElementById('canvas');
+		var gl = canvas.getContext('webgl');
+		if (!gl)
+			alert('No WebGl');
+
+		console.log(gl);
+
+		var vertex_shader = CreateShader(gl, 'hellotriangle.vp', gl.VERTEX_SHADER);
+		var fragment_shader = CreateShader(gl, 'hellotriangle.fp', gl.FRAGMENT_SHADER);
+		var program = CreateProgram(gl, vertex_shader, fragment_shader);
+
+		var position_attr_loc = gl.getAttribLocation(program, 'a_position');
+		var position_buffer = gl.createBuffer();
+		var positions = [
+			-1.0, -1.0, 0.0, 1.0,
+			0.0, 1.0, 0.0, 1.0,
+			1.0, -1.0, 0.0, 1.0
+		];
+		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
+		// Set data of currently bound buffer.
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+
+		gl.useProgram(program);
+		// http://stackoverflow.com/questions/17149728/when-should-glvertexattribpointer-be-called
+		// http://stackoverflow.com/questions/12427880/is-it-important-to-call-gldisablevertexattribarray
+		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
+		// Binds to the current array buffer.
+		// If we use size 2, then I can add the data as a vec2. Z and W will be 0.0 and 1.0 (defaults).
+		// stride = 0 => tighlty packed
+		// Stores info in VAO (if exist) and tells it the VBO to get the data from and how.
+		gl.vertexAttribPointer(position_attr_loc, /*size=*/4, /*type=*/gl.FLOAT, /*normalize=*/false,
+							   /*stride=*/0.0, /*offset=*/0.0);
+		// Say with shader 1 you got attributes A and B, with each having 500 vertices. Then you switch
+		// to shader 2, having only attribute A, but this time you draw 1000 vertices. If you'd not
+		// disable attribute B, OpenGL tried to read 1000 vertices from the buffer for B, which, if not
+		// unbound, changed or disabled would be a out of bounds access of the only 500 attributes in B.
+		// This is global in WebGL since it doesn't have VAO (only with extension). and it has to match
+		// the currently bound program.
+		// https://www.khronos.org/registry/webgl/specs/1.0/#6.5
+		gl.enableVertexAttribArray(position_attr_loc);
+
+		gl.viewport(0.0, 0.0, gl.canvas.width, gl.canvas.height);
+		gl.clearColor(0.0, 0.0, 0.0, 0.0);
+		gl.clear(gl.COLOR_BUFFER_BIT);
+
+		gl.useProgram(program);
+		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
+		gl.drawArrays(/*primitive=*/gl.TRIANGLES, /*offset=*/0.0, /*count=*/3.0);
+		console.log('init');
+	</script>
+</body>
+</html>
