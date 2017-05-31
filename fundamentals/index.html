@@ -94,6 +94,8 @@
 			gl.deleteShader(fragment_shader);
 		}
 
+		// This function will automatically resize the canvas to match its displayed (CSS)
+		// size.
 		function ResizeCanvas(canvas) {
 			// Client w/h corresponds to the size in CSS.
 			var displayWidth = canvas.clientWidth;
