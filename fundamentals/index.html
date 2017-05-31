@@ -97,13 +97,17 @@
 		// This function will automatically resize the canvas to match its displayed (CSS)
 		// size.
 		function ResizeCanvas(canvas) {
-			// Client w/h corresponds to the size in CSS.
-			var displayWidth = canvas.clientWidth;
-			var displayHeight = canvas.clientHeight;
+			// Use the logical to physical pixel ratio to make our canvas 1:1 with the
+			// display's physical pixels.
+			var logical_pixel_ratio = window.devicePixelRatio;
 
-			if (canvas.width != displayWidth || canvas.height != displayHeight) {
-				canvas.width = displayWidth;
-				canvas.height = displayHeight;
+			// Client w/h corresponds to the size in CSS.
+			var display_width = Math.floor(canvas.clientWidth * logical_pixel_ratio);
+			var display_height = Math.floor(canvas.clientHeight * logical_pixel_ratio);
+
+			if (canvas.width != display_width || canvas.height != display_height) {
+				canvas.width = display_width;
+				canvas.height = display_height;
 			}
 		}
 	</script>
@@ -154,17 +158,20 @@
 		gl.enableVertexAttribArray(position_attr_loc);
 
 		// Ideally this would be called every frame to keep with any changes to window.
-		ResizeCanvas(canvas);
+		ResizeCanvas(gl.canvas);
 		// Now that the canvas HTML size matches the Javascript one we can set the viewport to mathc
 		// the size of the canvas.
 		gl.viewport(0.0, 0.0, gl.canvas.width, gl.canvas.height);
+		// This call would be more correct if we have multiple monitors. Not sure how it affects the
+		// size of the canvas since Resize canvas is only changing that one.
+		// gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 		gl.clearColor(0.0, 0.0, 0.0, 0.0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
 		gl.useProgram(program);
 		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
 		gl.drawArrays(/*primitive=*/gl.TRIANGLES, /*offset=*/0.0, /*count=*/3.0);
-		console.log('init');
+		console.log('done');
 	</script>
 </body>
 </html>
