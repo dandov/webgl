@@ -16,6 +16,26 @@
 	</style>
 </head>
 <body>
+	<!-- HTML5 canvas has 2 sizes: HTML size with h/w attributes
+		 and one in Javascript which is set via Javascript with canvas.width/height.
+
+		 If there is no CSS the frame buffer size will match with the size in which
+		 the canvas is displayed. If there is CSS then displayWidth/Height will be
+		 different and the frame buffer will be scaled accordingly (if needed).
+
+		 These 2 examples are the same:
+		 <canvas id="canvas" width="512px" height="512px"></canvas>
+		 or 
+		 Javascript
+		 var c = doc.getElemById('canvas');
+		 c.width = 512; c.height = 512;
+
+		When you add CSS the display size changes (clientWidth/Height):
+		style="width: 1024px; height: 1024px;"
+		
+		In the example above the frame buffer is 512x512 but it is upscaled to twice that
+		size.
+	-->
 	<canvas id="canvas" width="512px" height="512px"></canvas>
 	<script id="hellotriangle.vp" type="glsl">
  
@@ -73,6 +93,17 @@
 			gl.deleteShader(vertex_shader);
 			gl.deleteShader(fragment_shader);
 		}
+
+		function ResizeCanvas(canvas) {
+			// Client w/h corresponds to the size in CSS.
+			var displayWidth = canvas.clientWidth;
+			var displayHeight = canvas.clientHeight;
+
+			if (canvas.width != displayWidth || canvas.height != displayHeight) {
+				canvas.width = displayWidth;
+				canvas.height = displayHeight;
+			}
+		}
 	</script>
 	<script type="text/javascript">
 		// https://webglfundamentals.org/webgl/lessons/webgl-fundamentals.html
@@ -120,6 +151,10 @@
 		// https://www.khronos.org/registry/webgl/specs/1.0/#6.5
 		gl.enableVertexAttribArray(position_attr_loc);
 
+		// Ideally this would be called every frame to keep with any changes to window.
+		ResizeCanvas(canvas);
+		// Now that the canvas HTML size matches the Javascript one we can set the viewport to mathc
+		// the size of the canvas.
 		gl.viewport(0.0, 0.0, gl.canvas.width, gl.canvas.height);
 		gl.clearColor(0.0, 0.0, 0.0, 0.0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
