@@ -43,11 +43,13 @@
 	  attribute vec2 a_position_px;
 	  // set a uniform for width and height.
 	  uniform vec2 u_window_size_px;
+	  uniform float u_logical_pixel_ratio;
 	 
 	  // all shaders have a main function
 	  void main() {
-	  	float clip_x = (2.0 * a_position_px.x - u_window_size_px.x) / u_window_size_px.x;
-	  	float clip_y = (2.0 * a_position_px.y - u_window_size_px.y) / u_window_size_px.y;
+	  	vec2 pos_physical_px = u_logical_pixel_ratio * a_position_px;
+	  	float clip_x = (2.0 * pos_physical_px.x - u_window_size_px.x) / u_window_size_px.x;
+	  	float clip_y = (2.0 * pos_physical_px.y - u_window_size_px.y) / u_window_size_px.y;
 	    gl_Position = vec4(clip_x, clip_y, 0.0, 1.0);
 	  }
 	</script>
@@ -158,6 +160,7 @@
 		// Set the uniforms in the shader.
 		gl.useProgram(program);
 		var u_window_size_px_loc = gl.getUniformLocation(program, 'u_window_size_px');
+		var u_logical_pixel_ratio_loc = gl.getUniformLocation(program, 'u_logical_pixel_ratio');
 
 		// Ideally this would be called every frame to keep with any changes to window.
 		ResizeCanvas(gl.canvas);
@@ -172,7 +175,8 @@
 
 		gl.useProgram(program);
 		// Once we have our program we can set its uniforms.
-		gl.uniform2f(u_window_size_px_loc, 512.0, 512.0);
+		gl.uniform2f(u_window_size_px_loc, gl.canvas.width, gl.canvas.height);
+		gl.uniform1f(u_logical_pixel_ratio_loc, window.devicePixelRatio);
 		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
 		gl.drawArrays(/*primitive=*/gl.TRIANGLES, /*offset=*/0.0, /*count=*/3.0);
 		console.log('done');
