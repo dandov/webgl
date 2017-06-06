@@ -175,8 +175,10 @@
 
 		gl.useProgram(program);
 		// Once we have our program we can set its uniforms.
+		// We need to call this after resize canvas.
 		gl.uniform2f(u_window_size_px_loc, gl.canvas.width, gl.canvas.height);
 		gl.uniform1f(u_logical_pixel_ratio_loc, window.devicePixelRatio);
+
 		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
 		gl.drawArrays(/*primitive=*/gl.TRIANGLES, /*offset=*/0.0, /*count=*/3.0);
 		console.log('done');
