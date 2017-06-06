@@ -172,7 +172,7 @@
 
 		gl.useProgram(program);
 		// Once we have our program we can set its uniforms.
-		gl.uniform2f(u_window_size_px_loc, gl.canvas.width, gl.canvas.height);
+		gl.uniform2f(u_window_size_px_loc, 512.0, 512.0);
 		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
 		gl.drawArrays(/*primitive=*/gl.TRIANGLES, /*offset=*/0.0, /*count=*/3.0);
 		console.log('done');
