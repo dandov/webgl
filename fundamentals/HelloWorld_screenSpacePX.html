@@ -5,7 +5,7 @@
 	<style type="text/css">
 		 body {
         border: 0;
-        background-color: white;
+        background-color: #35373a;
       }
       /* make the canvas the size of the viewport */
       canvas {
@@ -171,7 +171,7 @@
 		// This call would be more correct if we have multiple monitors. Not sure how it affects the
 		// size of the canvas since Resize canvas is only changing that one.
 		// gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-		gl.clearColor(0.0, 0.0, 0.0, 0.0);
+		gl.clearColor(1.0, 1.0, 1.0, 1.0);
 		gl.clear(gl.COLOR_BUFFER_BIT);
 
 		gl.useProgram(program);

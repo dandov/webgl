@@ -4,6 +4,42 @@
 		"selected_items":
 		[
 			[
+				"uni",
+				"u_window_size_px_loc"
+			],
+			[
+				"cl",
+				"clip_y"
+			],
+			[
+				"win",
+				"window_size"
+			],
+			[
+				"a_po",
+				"a_position_px"
+			],
+			[
+				"scr",
+				"screenspace"
+			],
+			[
+				"dis",
+				"displayHeight"
+			],
+			[
+				"disp",
+				"displayHeight"
+			],
+			[
+				"he",
+				"height"
+			],
+			[
+				"display",
+				"displayWidth"
+			],
+			[
 				"posi",
 				"position_attr_loc"
 			],
@@ -31,6 +67,15 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "fundamentals/HelloWorld_screenSpacePX.html",
+			"settings":
+			{
+				"buffer_size": 7407,
+				"encoding": "UTF-8",
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -64,17 +109,19 @@
 	},
 	"expanded_folders":
 	[
-		"/C/Users/dando/projects/webgl"
+		"/C/Users/dando/projects/webgl",
+		"/C/Users/dando/projects/webgl/fundamentals"
 	],
 	"file_history":
 	[
+		"/C/Users/dando/projects/webgl/fundamentals/index.html",
 		"/C/Users/dando/Desktop/http-example.js",
 		"/C/Users/dando/Desktop/hello.js",
 		"/C/Users/dando/Desktop/index.html"
 	],
 	"find":
 	{
-		"height": 0.0
+		"height": 39.0
 	},
 	"find_in_files":
 	{
@@ -88,6 +135,8 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"a_position_px",
+			"screenspace"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -105,18 +154,48 @@
 	"groups":
 	[
 		{
+			"selected": 0,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "fundamentals/HelloWorld_screenSpacePX.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 7407,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1700,
+								1700
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
 	"incremental_find":
 	{
-		"height": 0.0
+		"height": 39.0
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 55.0
 	},
 	"layout":
 	{
@@ -149,7 +228,7 @@
 	"project": "webgl.sublime-project",
 	"replace":
 	{
-		"height": 0.0
+		"height": 74.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -158,6 +237,10 @@
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"ind",
+				"fundamentals\\index.html"
+			]
 		],
 		"width": 0.0
 	},
@@ -186,8 +269,8 @@
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
-	"side_bar_visible": true,
-	"side_bar_width": 300.0,
+	"side_bar_visible": false,
+	"side_bar_width": 548.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
