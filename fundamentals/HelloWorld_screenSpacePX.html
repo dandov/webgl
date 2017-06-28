@@ -14,6 +14,7 @@
         display: block;
       }
 	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
 <body>
 	<!-- HTML5 canvas has 2 sizes: HTML size with h/w attributes
@@ -116,73 +117,75 @@
 		// https://webglfundamentals.org/webgl/lessons/webgl-fundamentals.html
 		// http://blog.tojicode.com/2012/10/oesvertexarrayobject-extension.html
 		// https://learnopengl.com/#!Getting-started/Hello-Triangle
-		var canvas = document.getElementById('canvas');
-		var gl = canvas.getContext('webgl');
-		if (!gl)
-			alert('No WebGl');
+		$(document).ready(function(){
+		    var canvas = document.getElementById('canvas');
+			var gl = canvas.getContext('webgl');
+			if (!gl)
+				alert('No WebGl');
 
-		console.log(gl);
+			console.log(gl);
 
-		var vertex_shader = CreateShader(gl, 'screenspace.vp', gl.VERTEX_SHADER);
-		var fragment_shader = CreateShader(gl, 'screenspace.fp', gl.FRAGMENT_SHADER);
-		var program = CreateProgram(gl, vertex_shader, fragment_shader);
+			var vertex_shader = CreateShader(gl, 'screenspace.vp', gl.VERTEX_SHADER);
+			var fragment_shader = CreateShader(gl, 'screenspace.fp', gl.FRAGMENT_SHADER);
+			var program = CreateProgram(gl, vertex_shader, fragment_shader);
 
-		var position_attr_loc = gl.getAttribLocation(program, 'a_position_px');
-		var position_buffer = gl.createBuffer();
-		var positions = [
-			0.0, 0.0,
-			256.0, 512.0,
-			512.0, 0.0
-		];
-		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
-		// Set data of currently bound buffer.
-		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+			var position_attr_loc = gl.getAttribLocation(program, 'a_position_px');
+			var position_buffer = gl.createBuffer();
+			var positions = [
+				0.0, 0.0,
+				256.0, 512.0,
+				512.0, 0.0
+			];
+			gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
+			// Set data of currently bound buffer.
+			gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 
 
-		gl.useProgram(program);
-		// http://stackoverflow.com/questions/17149728/when-should-glvertexattribpointer-be-called
-		// http://stackoverflow.com/questions/12427880/is-it-important-to-call-gldisablevertexattribarray
-		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
-		// Binds to the current array buffer.
-		// If we use size 2, then I can add the data as a vec2. Z and W will be 0.0 and 1.0 (defaults).
-		// stride = 0 => tighlty packed
-		// Stores info in VAO (if exist) and tells it the VBO to get the data from and how.
-		gl.vertexAttribPointer(position_attr_loc, /*size=*/2, /*type=*/gl.FLOAT, /*normalize=*/false,
-							   /*stride=*/0.0, /*offset=*/0.0);
-		// Say with shader 1 you got attributes A and B, with each having 500 vertices. Then you switch
-		// to shader 2, having only attribute A, but this time you draw 1000 vertices. If you'd not
-		// disable attribute B, OpenGL tried to read 1000 vertices from the buffer for B, which, if not
-		// unbound, changed or disabled would be a out of bounds access of the only 500 attributes in B.
-		// This is global in WebGL since it doesn't have VAO (only with extension). and it has to match
-		// the currently bound program.
-		// https://www.khronos.org/registry/webgl/specs/1.0/#6.5
-		gl.enableVertexAttribArray(position_attr_loc);
+			gl.useProgram(program);
+			// http://stackoverflow.com/questions/17149728/when-should-glvertexattribpointer-be-called
+			// http://stackoverflow.com/questions/12427880/is-it-important-to-call-gldisablevertexattribarray
+			gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
+			// Binds to the current array buffer.
+			// If we use size 2, then I can add the data as a vec2. Z and W will be 0.0 and 1.0 (defaults).
+			// stride = 0 => tighlty packed
+			// Stores info in VAO (if exist) and tells it the VBO to get the data from and how.
+			gl.vertexAttribPointer(position_attr_loc, /*size=*/2, /*type=*/gl.FLOAT, /*normalize=*/false,
+								   /*stride=*/0.0, /*offset=*/0.0);
+			// Say with shader 1 you got attributes A and B, with each having 500 vertices. Then you switch
+			// to shader 2, having only attribute A, but this time you draw 1000 vertices. If you'd not
+			// disable attribute B, OpenGL tried to read 1000 vertices from the buffer for B, which, if not
+			// unbound, changed or disabled would be a out of bounds access of the only 500 attributes in B.
+			// This is global in WebGL since it doesn't have VAO (only with extension). and it has to match
+			// the currently bound program.
+			// https://www.khronos.org/registry/webgl/specs/1.0/#6.5
+			gl.enableVertexAttribArray(position_attr_loc);
 
-		// Set the uniforms in the shader.
-		gl.useProgram(program);
-		var u_window_size_px_loc = gl.getUniformLocation(program, 'u_window_size_px');
-		var u_logical_pixel_ratio_loc = gl.getUniformLocation(program, 'u_logical_pixel_ratio');
+			// Set the uniforms in the shader.
+			gl.useProgram(program);
+			var u_window_size_px_loc = gl.getUniformLocation(program, 'u_window_size_px');
+			var u_logical_pixel_ratio_loc = gl.getUniformLocation(program, 'u_logical_pixel_ratio');
 
-		// Ideally this would be called every frame to keep with any changes to window.
-		ResizeCanvas(gl.canvas);
-		// Now that the canvas HTML size matches the Javascript one we can set the viewport to mathc
-		// the size of the canvas.
-		gl.viewport(0.0, 0.0, gl.canvas.width, gl.canvas.height);
-		// This call would be more correct if we have multiple monitors. Not sure how it affects the
-		// size of the canvas since Resize canvas is only changing that one.
-		// gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
-		gl.clearColor(1.0, 1.0, 1.0, 1.0);
-		gl.clear(gl.COLOR_BUFFER_BIT);
+			// Ideally this would be called every frame to keep with any changes to window.
+			ResizeCanvas(gl.canvas);
+			// Now that the canvas HTML size matches the Javascript one we can set the viewport to mathc
+			// the size of the canvas.
+			gl.viewport(0.0, 0.0, gl.canvas.width, gl.canvas.height);
+			// This call would be more correct if we have multiple monitors. Not sure how it affects the
+			// size of the canvas since Resize canvas is only changing that one.
+			// gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+			gl.clearColor(1.0, 1.0, 1.0, 1.0);
+			gl.clear(gl.COLOR_BUFFER_BIT);
 
-		gl.useProgram(program);
-		// Once we have our program we can set its uniforms.
-		// We need to call this after resize canvas.
-		gl.uniform2f(u_window_size_px_loc, gl.canvas.width, gl.canvas.height);
-		gl.uniform1f(u_logical_pixel_ratio_loc, window.devicePixelRatio);
+			gl.useProgram(program);
+			// Once we have our program we can set its uniforms.
+			// We need to call this after resize canvas.
+			gl.uniform2f(u_window_size_px_loc, gl.canvas.width, gl.canvas.height);
+			gl.uniform1f(u_logical_pixel_ratio_loc, window.devicePixelRatio);
 
-		gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
-		gl.drawArrays(/*primitive=*/gl.TRIANGLES, /*offset=*/0.0, /*count=*/3.0);
-		console.log('done');
+			gl.bindBuffer(gl.ARRAY_BUFFER, position_buffer);
+			gl.drawArrays(/*primitive=*/gl.TRIANGLES, /*offset=*/0.0, /*count=*/3.0);
+			console.log('done');
+		});
 	</script>
 </body>
 </html>
