@@ -16,14 +16,13 @@
 	</style>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script id="screenspace.vp" type="glsl">
- 
-	  // an attribute will receive data from a buffer
+	  // An attribute will receive data from a buffer
 	  attribute vec2 a_position_px;
 	  // set a uniform for width and height.
 	  uniform vec2 u_window_size_px;
 	  uniform float u_logical_pixel_ratio;
 	 
-	  // all shaders have a main function
+	  // All shaders have a main function.
 	  void main() {
 	  	vec2 pos_physical_px = u_logical_pixel_ratio * a_position_px;
 	  	float clip_x = (2.0 * pos_physical_px.x - u_window_size_px.x) / u_window_size_px.x;
@@ -33,13 +32,13 @@
 	  }
 	</script>
 	<script id="screenspace.fp" type="glsl">
-	  // fragment shaders don't have a default precision so we need
-	  // to pick one. mediump is a good default
+	  // Fragment shaders don't have a default precision so we need
+	  // to pick one. mediump is a good default.
 	  precision highp float;
 	 
 	  void main() {
 	    // gl_FragColor is a special variable a fragment shader
-	    // is responsible for setting
+	    // is responsible for setting.
 	    gl_FragColor = vec4(1.0, 0.0, 1.0, 1.0);
 	  }
 	</script>
