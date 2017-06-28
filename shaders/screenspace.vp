@@ -1,0 +1,15 @@
+// an attribute will receive data from a buffer
+attribute vec2 a_position_px;
+
+// set a uniform for width and height.
+uniform vec2 u_window_size_px;
+uniform float u_logical_pixel_ratio;
+
+// all shaders have a main function
+void main() {
+  	vec2 pos_physical_px = u_logical_pixel_ratio * a_position_px;
+  	float clip_x = (2.0 * pos_physical_px.x - u_window_size_px.x) / u_window_size_px.x;
+  	float clip_y = (2.0 * pos_physical_px.y - u_window_size_px.y) / u_window_size_px.y;
+  	// Invert the y axis to match common graphics libs.
+ 	 gl_Position = vec4(clip_x, -clip_y, 0.0, 1.0);
+}
